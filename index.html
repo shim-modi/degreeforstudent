@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة المعلم | منصة أتقن</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+body{font-family:'Cairo',sans-serif;background:#f8fafc}
+</style>
+</head>
+<body class="min-h-screen text-slate-800">
+<header class="bg-white border-b border-slate-200 sticky top-0 z-20">
+  <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
+    <div>
+      <h1 class="text-xl sm:text-2xl font-black">لوحة المعلم</h1>
+      <p class="text-xs text-slate-500 mt-1">نتائج طلاب منصة أتقن | رياضيات 2</p>
+    </div>
+    <button id="logoutBtn" class="hidden px-4 py-2 rounded-xl bg-slate-900 text-white text-sm font-bold hover:bg-slate-700">
+      <i class="fa-solid fa-right-from-bracket ml-1"></i> تسجيل الخروج
+    </button>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-6">
+  <section id="loginCard" class="max-w-md mx-auto bg-white rounded-3xl border border-slate-200 shadow-sm p-6">
+    <div class="text-center mb-6">
+      <div class="w-14 h-14 mx-auto rounded-2xl bg-violet-100 text-violet-700 flex items-center justify-center text-2xl mb-3">
+        <i class="fa-solid fa-chalkboard-user"></i>
+      </div>
+      <h2 class="text-2xl font-black">دخول المعلم</h2>
+      <p class="text-sm text-slate-500 mt-1">استخدم حساب المعلم في Supabase</p>
+    </div>
+    <label class="block text-sm font-bold mb-2">البريد الإلكتروني</label>
+    <input id="email" type="email" dir="ltr" class="w-full border border-slate-300 rounded-xl px-4 py-3 mb-4 outline-none focus:ring-2 focus:ring-violet-300" placeholder="teacher@example.com">
+    <label class="block text-sm font-bold mb-2">كلمة المرور</label>
+    <input id="password" type="password" dir="ltr" class="w-full border border-slate-300 rounded-xl px-4 py-3 mb-4 outline-none focus:ring-2 focus:ring-violet-300" placeholder="••••••••">
+    <button id="loginBtn" class="w-full bg-violet-600 text-white rounded-xl py-3 font-black hover:bg-violet-700">
+      دخول
+    </button>
+    <p id="loginMsg" class="text-sm text-center mt-4"></p>
+  </section>
+
+  <section id="dashboard" class="hidden">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+      <div class="bg-white rounded-2xl border border-slate-200 p-4">
+        <p class="text-xs text-slate-500">عدد النتائج</p>
+        <p id="statTotal" class="text-2xl font-black mt-1">0</p>
+      </div>
+      <div class="bg-white rounded-2xl border border-slate-200 p-4">
+        <p class="text-xs text-slate-500">متوسط النسبة</p>
+        <p id="statAvg" class="text-2xl font-black mt-1">0%</p>
+      </div>
+      <div class="bg-white rounded-2xl border border-slate-200 p-4">
+        <p class="text-xs text-slate-500">أعلى نسبة</p>
+        <p id="statMax" class="text-2xl font-black mt-1">0%</p>
+      </div>
+      <div class="bg-white rounded-2xl border border-slate-200 p-4">
+        <p class="text-xs text-slate-500">النتائج الممتازة</p>
+        <p id="statExcellent" class="text-2xl font-black mt-1">0</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-4 sm:p-5">
+      <div class="flex flex-col lg:flex-row gap-3 lg:items-center lg:justify-between mb-5">
+        <div>
+          <h2 class="text-xl font-black">نتائج الطلاب</h2>
+          <p id="lastUpdated" class="text-xs text-slate-500 mt-1"></p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-2">
+          <input id="search" type="search" class="border border-slate-300 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-violet-300" placeholder="ابحث بالاسم أو رقم الطالب">
+          <select id="gradeFilter" class="border border-slate-300 rounded-xl px-3 py-2 text-sm outline-none">
+            <option value="">كل التقديرات</option>
+            <option>ممتاز</option>
+            <option>متقن</option>
+            <option>جيد جدًا</option>
+            <option>جيد</option>
+            <option>يحتاج دعم</option>
+          </select>
+          <select id="sortBy" class="border border-slate-300 rounded-xl px-3 py-2 text-sm outline-none">
+            <option value="date_desc">الأحدث أولًا</option>
+            <option value="date_asc">الأقدم أولًا</option>
+            <option value="percent_desc">النسبة الأعلى</option>
+            <option value="percent_asc">النسبة الأقل</option>
+            <option value="name_asc">الاسم أ-ي</option>
+          </select>
+          <button id="refreshBtn" class="bg-violet-600 text-white rounded-xl px-4 py-2 text-sm font-black hover:bg-violet-700">
+            <i class="fa-solid fa-rotate ml-1"></i> تحديث
+          </button>
+        </div>
+      </div>
+
+      <div id="status" class="text-sm mb-3"></div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm text-right">
+          <thead>
+            <tr class="border-b border-slate-200 text-slate-500">
+              <th class="py-3 px-2">#</th>
+              <th class="py-3 px-2">الطالب</th>
+              <th class="py-3 px-2">رقم الطالب</th>
+              <th class="py-3 px-2">التاريخ</th>
+              <th class="py-3 px-2">الدرجة</th>
+              <th class="py-3 px-2">النسبة</th>
+              <th class="py-3 px-2">التقدير</th>
+            </tr>
+          </thead>
+          <tbody id="resultsBody"></tbody>
+        </table>
+      </div>
+      <div id="empty" class="hidden text-center py-12 text-slate-500">لا توجد نتائج مطابقة.</div>
+    </div>
+  </section>
+</main>
+
+<script>
+const SUPABASE_URL = 'https://wdwpibwzrffeierquknu.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_bI5wPwfYqNGxWbOiwJlMuQ_j9NrNZme';
+const RESULTS_TABLE = 'student_results';
+
+let accessToken = "";
+let allResults = [];
+
+function esc(v) {
+  return String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+}
+
+function showLoginMessage(msg, ok=false) {
+  const el = document.getElementById("loginMsg");
+  el.textContent = msg;
+  el.className = "text-sm text-center mt-4 " + (ok ? "text-emerald-600" : "text-rose-600");
+}
+
+async function login() {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  if (!email || !password) {
+    showLoginMessage("أدخل البريد الإلكتروني وكلمة المرور.");
+    return;
+  }
+  const btn = document.getElementById("loginBtn");
+  btn.disabled = true;
+  btn.textContent = "جارٍ الدخول...";
+  try {
+    const r = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+      method:"POST",
+      headers: {
+        "apikey": SUPABASE_PUBLISHABLE_KEY,
+        "Content-Type":"application/json"
+      },
+      body: JSON.stringify({email,password})
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.msg || data.error_description || "بيانات الدخول غير صحيحة.");
+    accessToken = data.access_token;
+    sessionStorage.setItem("teacher_access_token", accessToken);
+    document.getElementById("loginCard").classList.add("hidden");
+    document.getElementById("dashboard").classList.remove("hidden");
+    document.getElementById("logoutBtn").classList.remove("hidden");
+    await loadResults();
+  } catch(e) {
+    showLoginMessage(e.message || "تعذر تسجيل الدخول.");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "دخول";
+  }
+}
+
+function logout() {
+  accessToken = "";
+  sessionStorage.removeItem("teacher_access_token");
+  document.getElementById("dashboard").classList.add("hidden");
+  document.getElementById("loginCard").classList.remove("hidden");
+  document.getElementById("logoutBtn").classList.add("hidden");
+}
+
+async function loadResults() {
+  const status = document.getElementById("status");
+  status.textContent = "جارٍ تحميل النتائج...";
+  status.className = "text-sm mb-3 text-slate-500";
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/${RESULTS_TABLE}?select=id,name,studentId,date,total,correct,percent,grade&order=date.desc`, {
+      headers: {
+        "apikey": SUPABASE_PUBLISHABLE_KEY,
+        "Authorization": `Bearer ${accessToken}`
+      }
+    });
+    if (!r.ok) {
+      const t = await r.text();
+      throw new Error(t || "تعذر تحميل النتائج.");
+    }
+    allResults = await r.json();
+    document.getElementById("lastUpdated").textContent = "آخر تحديث: " + new Date().toLocaleString("ar-SA");
+    status.textContent = "";
+    render();
+  } catch(e) {
+    status.textContent = "تعذر تحميل النتائج: " + e.message;
+    status.className = "text-sm mb-3 text-rose-600 font-bold";
+  }
+}
+
+function render() {
+  const q = document.getElementById("search").value.trim().toLowerCase();
+  const grade = document.getElementById("gradeFilter").value;
+  const sort = document.getElementById("sortBy").value;
+
+  let rows = allResults.filter(x =>
+    (!q || String(x.name||"").toLowerCase().includes(q) || String(x.studentId||"").toLowerCase().includes(q)) &&
+    (!grade || x.grade === grade)
+  );
+
+  rows.sort((a,b) => {
+    if (sort === "percent_desc") return Number(b.percent)-Number(a.percent);
+    if (sort === "percent_asc") return Number(a.percent)-Number(b.percent);
+    if (sort === "name_asc") return String(a.name||"").localeCompare(String(b.name||""),"ar");
+    const da = new Date(a.date).getTime(), db = new Date(b.date).getTime();
+    return sort === "date_asc" ? da-db : db-da;
+  });
+
+  const avg = allResults.length ? allResults.reduce((s,x)=>s+Number(x.percent||0),0)/allResults.length : 0;
+  const max = allResults.length ? Math.max(...allResults.map(x=>Number(x.percent||0))) : 0;
+  document.getElementById("statTotal").textContent = allResults.length;
+  document.getElementById("statAvg").textContent = avg.toFixed(1) + "%";
+  document.getElementById("statMax").textContent = max.toFixed(1) + "%";
+  document.getElementById("statExcellent").textContent = allResults.filter(x=>x.grade==="ممتاز").length;
+
+  const body = document.getElementById("resultsBody");
+  const empty = document.getElementById("empty");
+  body.innerHTML = rows.map((x,i)=>`
+    <tr class="border-b border-slate-100 hover:bg-slate-50">
+      <td class="py-3 px-2 font-bold">${i+1}</td>
+      <td class="py-3 px-2 font-bold whitespace-nowrap">${esc(x.name)}</td>
+      <td class="py-3 px-2">${esc(x.studentId)}</td>
+      <td class="py-3 px-2 whitespace-nowrap">${new Date(x.date).toLocaleString("ar-SA")}</td>
+      <td class="py-3 px-2">${Number(x.correct)} / ${Number(x.total)}</td>
+      <td class="py-3 px-2 font-black">${Number(x.percent).toFixed(1)}%</td>
+      <td class="py-3 px-2 font-bold">${esc(x.grade)}</td>
+    </tr>
+  `).join("");
+  empty.classList.toggle("hidden", rows.length !== 0);
+}
+
+document.getElementById("loginBtn").addEventListener("click", login);
+document.getElementById("logoutBtn").addEventListener("click", logout);
+document.getElementById("refreshBtn").addEventListener("click", loadResults);
+document.getElementById("search").addEventListener("input", render);
+document.getElementById("gradeFilter").addEventListener("change", render);
+document.getElementById("sortBy").addEventListener("change", render);
+document.getElementById("password").addEventListener("keydown", e => { if(e.key==="Enter") login(); });
+
+const savedToken = sessionStorage.getItem("teacher_access_token");
+if (savedToken) {
+  accessToken = savedToken;
+  document.getElementById("loginCard").classList.add("hidden");
+  document.getElementById("dashboard").classList.remove("hidden");
+  document.getElementById("logoutBtn").classList.remove("hidden");
+  loadResults();
+}
+</script>
+</body>
+</html>
